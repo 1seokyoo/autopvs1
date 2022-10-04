@@ -4,6 +4,7 @@
 # created: 2019/2/2 16:28
 
 import sys
+import re
 from collections import namedtuple
 
 
@@ -20,6 +21,17 @@ def get_inheritance(genename):
 
 
 lof_type = ['frameshift', 'stop_gained', 'splice_acceptor', 'splice_donor', 'start_lost']
+
+
+def get_vcfrecord(vcf):
+    if all(hasattr(vcf, attr) for attr in ['chrom', 'pos', 'ref', 'alt']):
+        return vcf
+    elif re.match(r'^((?:chr)?[\dXYMT]{1,2})-(\d+)-([ATCG]+)-([ATCG]+)$', vcf, re.I):
+        v = vcf.split("-")
+        v[0] = re.sub('chr', '', v[0], flags=re.I)
+        return VCFRecord(v[0], int(v[1]), v[2], v[3])
+    else:
+        raise TypeError("Wrong VCF Record")
 
 
 def vep_consequence_trans(vep_consequence):
