@@ -11,7 +11,6 @@ from read_data import pvs1_levels
 from read_data import genome_hg19, domain_hg19, hotspot_hg19, curated_region_hg19, exon_lof_popmax_hg19, pathogenic_hg19
 from read_data import genome_hg38, domain_hg38, hotspot_hg38, curated_region_hg38, exon_lof_popmax_hg38, pathogenic_hg38
 
-
 class PVS1:
     """
     very strong strength level for pathogenicity in the ACMG/AMP guideline:
@@ -55,6 +54,7 @@ class PVS1:
             self.exon_lof_popmax = exon_lof_popmax_hg38
             self.pathogenic_dict = pathogenic_hg38
 
+        self.desc = 'na'
         self.altcodon = 'na'
         self.init_path = 0
         self.criterion = 'na'
@@ -110,6 +110,7 @@ class PVS1:
                 self.criterion = 'CDH1'
                 return Strength.Strong
             splice = Splicing(self.vcfrecord, self.transcript, self.genome_version)
+            self.desc = splice.func_desc
             if splice.preserves_reading_frame:
                 if splice.is_critical_to_protein_func:
                     self.criterion = 'SS10'
@@ -161,6 +162,7 @@ class PVS1:
         Truncated/altered region is critical to protein function.
         :return: string
         """
+        self.desc = self.functional_region[1]
         return self.functional_region[0]
 
     @property
@@ -397,10 +399,12 @@ class PVS1:
         single LOF variant frequency >= 0.001
         multiple LOF variants frequency >= 0.005
         """
+        self.desc = self.exon_lof_popmax_info[1]
         return self.exon_lof_popmax_info[0]
 
     @property
     def exon_lof_popmax_desc(self):
+        
         return self.exon_lof_popmax_info[1]
 
     @property

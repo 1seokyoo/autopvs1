@@ -1,17 +1,11 @@
 FROM ubuntu:20.04
-#MAINTAINER yoon <sungyoon.kim@ngenebio.com>
 
 RUN echo 'export LC_MESSAGES="en_US.UTF-8"' >> /etc/profile
 RUN echo 'export LANG="en_US.UTF-8"' >> /etc/profile
 RUN echo 'export LANGUAGE="en_US:en"' >> /etc/profile
 RUN echo 'export LC_ALL="en_US.UTF-8"' >> /etc/profile
 
-RUN mkdir -p /data
-RUN mkdir -p /autopvs1
-
-# ADD PVS1_1.0.py /
-# ADD autopvs1 /autopvs1
-
+# Install git
 RUN apt-get update -y && \
     apt-get install software-properties-common -y && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
@@ -36,5 +30,14 @@ RUN apt-get install perl -y && \
     apt-get install pyvcf -y && \
     apt-get clean;
 
-RUN pip --no-cache-dir install pyfaidx
+# Set the working directory to /app
+WORKDIR /app
 
+# Copy the current directory contents into the container's /app directory
+COPY . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install -r REQUIREMENTS.txt
+
+# Start the application with gunicorn
+CMD gunicorn  -b 0.0.0.0:8000 app --threads=5 --chdir ./rest_autopvs1/
