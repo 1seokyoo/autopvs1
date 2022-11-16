@@ -234,7 +234,7 @@ def read_pvs1_levels(file):
             for line in fh:
                 record = line.strip().split("\t")
                 gene = record[0]
-                level = record[1]
+                level = record[1].replace('E','')
                 if gene not in _pvs1_levels:
                     _pvs1_levels[gene] = level
     except Exception as err:
