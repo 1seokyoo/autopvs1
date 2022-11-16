@@ -54,6 +54,9 @@ class PVS1:
             self.exon_lof_popmax = exon_lof_popmax_hg38
             self.pathogenic_dict = pathogenic_hg38
 
+        gene_name = self.transcript.gene.name
+        self.gene_level = pvs1_levels[gene_name] 
+
         self.desc = 'na'
         self.altcodon = 'na'
         self.init_path = 0
@@ -336,6 +339,8 @@ class PVS1:
         new_stop_codon = self.get_pHGVS_termination
         cds_sizes = [i for i in self.transcript.cds_sizes if i > 0]
         if self.transcript.gene.name == 'GJB2':  # Hearing Loss Guidelines
+            return True
+        elif self.transcript.gene.name == 'BRCA2' and self.get_pHGVS_termination < 3326: # BRCA2 Foundation CDx
             return True
         elif len(cds_sizes) <= 1:
             return False

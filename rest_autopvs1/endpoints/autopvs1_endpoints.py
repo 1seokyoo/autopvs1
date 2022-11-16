@@ -48,9 +48,12 @@ class AutoPVS1Class(Resource):
         
         validate = PVS1(genomic_coordinate, consequence, hgvs_c, hgvs_p, transcript, genome_build)
         content = { "strength": validate.strength.name,
+                    "raw_strength": validate.strength_raw.name,
                     "description": validate.desc,
                     "init_path": validate.init_path,
-                    "criterion": validate.criterion}
+                    "criterion": validate.criterion,
+                    "gene_level": validate.gene_level
+        }
 
         # Collect Arguments
         args = parser.parse_args()
